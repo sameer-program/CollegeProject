@@ -1,19 +1,22 @@
-import { NextAuthOptions } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import connectDB from '@/lib/db/connect';
-import User from '@/lib/db/models/User';
+// Import env init first to set environment variables
+import "./env-init";
+
+import { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import connectDB from "@/lib/db/connect";
+import User from "@/lib/db/models/User";
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error('Please enter email and password');
+          throw new Error("Please enter email and password");
         }
 
         await connectDB();
@@ -21,13 +24,13 @@ export const authOptions: NextAuthOptions = {
         const user = await User.findOne({ email: credentials.email });
 
         if (!user) {
-          throw new Error('No user found with this email');
+          throw new Error("No user found with this email");
         }
 
         const isPasswordValid = await user.matchPassword(credentials.password);
 
         if (!isPasswordValid) {
-          throw new Error('Invalid password');
+          throw new Error("Invalid password");
         }
 
         // Update last login
@@ -63,11 +66,12 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: '/login',
+    signIn: "/login",
   },
   session: {
-    strategy: 'jwt',
+    strategy: "jwt",
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  secret:
+    "your-super-secret-nextauth-key-change-in-production-2024-hardcoded-demo",
+  debug: false,
 };
-

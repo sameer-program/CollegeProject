@@ -56,7 +56,7 @@ export default function GovernanceDashboard() {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading...</div>;
+    return <div className="text-center py-8 text-gray-900">Loading...</div>;
   }
 
   return (
@@ -84,7 +84,7 @@ export default function GovernanceDashboard() {
       {/* Approved but Not Authorized Content */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b">
-          <h2 className="text-xl font-semibold">Approved Content Pending Authorization</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Approved Content Pending Authorization</h2>
         </div>
         <div className="p-6">
           {approvedResources.length === 0 ? (
@@ -95,7 +95,7 @@ export default function GovernanceDashboard() {
             <div className="space-y-4">
               {approvedResources.map((resource) => (
                 <div key={resource._id} className="border rounded-lg p-4">
-                  <h3 className="text-lg font-semibold">{resource.heading}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">{resource.heading}</h3>
                   <p className="text-sm text-gray-500 mt-1">
                     By: {resource.created_by?.full_name} | Classification:{' '}
                     {resource.classification}
@@ -121,7 +121,7 @@ export default function GovernanceDashboard() {
       {/* Policy Violation Alerts */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b">
-          <h2 className="text-xl font-semibold">Policy Violation Alerts</h2>
+          <h2 className="text-xl font-semibold text-gray-900">Policy Violation Alerts</h2>
         </div>
         <div className="p-6">
           <p className="text-gray-500 text-center py-8">No policy violations detected</p>

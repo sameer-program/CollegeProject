@@ -1,9 +1,12 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
-const MONGODB_URI = "mongodb+srv://raisamir4494_db_user:cefkQPOZRbzEYOHh@cluster0.niibu41.mongodb.net/CollegeProject";
+const MONGODB_URI =
+  "mongodb+srv://raisamir4494_db_user:cefkQPOZRbzEYOHh@cluster0.niibu41.mongodb.net/CollegeProject";
 
 if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+  throw new Error(
+    "Please define the MONGODB_URI environment variable inside .env.local"
+  );
 }
 
 interface MongooseCache {
@@ -29,12 +32,20 @@ async function connectDB(): Promise<typeof mongoose> {
   if (!cached.promise) {
     const opts = {
       bufferCommands: false,
+      serverSelectionTimeoutMS: 5000,
     };
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      console.log('✅ MongoDB Connected');
-      return mongoose;
-    });
+    cached.promise = mongoose
+      .connect(MONGODB_URI, opts)
+      .then((mongoose) => {
+        console.log("✅ MongoDB Connected");
+        return mongoose;
+      })
+      .catch((error) => {
+        console.error("❌ MongoDB connection error:", error.message);
+        cached.promise = null;
+        throw error;
+      });
   }
 
   try {
@@ -48,4 +59,3 @@ async function connectDB(): Promise<typeof mongoose> {
 }
 
 export default connectDB;
-

@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
 
 interface KnowledgeResource {
   _id: string;
@@ -19,7 +19,9 @@ interface KnowledgeResource {
 
 export default function ValidatorDashboard() {
   const { data: session } = useSession();
-  const [pendingResources, setPendingResources] = useState<KnowledgeResource[]>([]);
+  const [pendingResources, setPendingResources] = useState<KnowledgeResource[]>(
+    []
+  );
   const [history, setHistory] = useState<KnowledgeResource[]>([]);
   const [stats, setStats] = useState({
     pending: 0,
@@ -36,16 +38,16 @@ export default function ValidatorDashboard() {
   const fetchData = async () => {
     try {
       // Fetch pending resources
-      const pendingRes = await fetch('/api/knowledge?approval_state=Pending');
+      const pendingRes = await fetch("/api/knowledge?approval_state=Pending");
       const pendingData = await pendingRes.json();
       setPendingResources(pendingData.resources || []);
 
       // Fetch approved/rejected resources
-      const approvedRes = await fetch('/api/knowledge?approval_state=Approved');
-      const rejectedRes = await fetch('/api/knowledge?approval_state=Rejected');
+      const approvedRes = await fetch("/api/knowledge?approval_state=Approved");
+      const rejectedRes = await fetch("/api/knowledge?approval_state=Rejected");
       const approvedData = await approvedRes.json();
       const rejectedData = await rejectedRes.json();
-      
+
       const allHistory = [
         ...(approvedData.resources || []),
         ...(rejectedData.resources || []),
@@ -53,7 +55,7 @@ export default function ValidatorDashboard() {
       setHistory(allHistory.slice(0, 10));
 
       // Calculate stats
-      const validator = await fetch('/api/users/me').then((r) => r.json());
+      const validator = await fetch("/api/users/me").then((r) => r.json());
       setStats({
         pending: pendingData.resources?.length || 0,
         approved: validator.user?.approved_submissions || 0,
@@ -61,7 +63,7 @@ export default function ValidatorDashboard() {
         avgTime: 0, // Would calculate from timestamps in production
       });
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
@@ -70,36 +72,36 @@ export default function ValidatorDashboard() {
   const handleApprove = async (resourceId: string) => {
     try {
       const response = await fetch(`/api/knowledge/${resourceId}/approve`, {
-        method: 'POST',
+        method: "POST",
       });
       if (response.ok) {
         fetchData();
       }
     } catch (error) {
-      console.error('Error approving resource:', error);
+      console.error("Error approving resource:", error);
     }
   };
 
   const handleReject = async (resourceId: string) => {
-    const reason = prompt('Enter rejection reason:');
+    const reason = prompt("Enter rejection reason:");
     if (!reason) return;
 
     try {
       const response = await fetch(`/api/knowledge/${resourceId}/reject`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ reason }),
       });
       if (response.ok) {
         fetchData();
       }
     } catch (error) {
-      console.error('Error rejecting resource:', error);
+      console.error("Error rejecting resource:", error);
     }
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading...</div>;
+    return <div className="text-center py-8 text-gray-900">Loading...</div>;
   }
 
   return (
@@ -109,41 +111,64 @@ export default function ValidatorDashboard() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-sm font-medium text-gray-500">Pending Approvals</h3>
-          <p className="text-2xl font-bold text-yellow-600 mt-2">{stats.pending}</p>
+          <h3 className="text-sm font-medium text-gray-500">
+            Pending Approvals
+          </h3>
+          <p className="text-2xl font-bold text-yellow-600 mt-2">
+            {stats.pending}
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Approved</h3>
-          <p className="text-2xl font-bold text-green-600 mt-2">{stats.approved}</p>
+          <p className="text-2xl font-bold text-green-600 mt-2">
+            {stats.approved}
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
           <h3 className="text-sm font-medium text-gray-500">Rejected</h3>
-          <p className="text-2xl font-bold text-red-600 mt-2">{stats.rejected}</p>
+          <p className="text-2xl font-bold text-red-600 mt-2">
+            {stats.rejected}
+          </p>
         </div>
         <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-sm font-medium text-gray-500">Avg. Validation Time</h3>
-          <p className="text-2xl font-bold text-gray-900 mt-2">{stats.avgTime}m</p>
+          <h3 className="text-sm font-medium text-gray-500">
+            Avg. Validation Time
+          </h3>
+          <p className="text-2xl font-bold text-gray-900 mt-2">
+            {stats.avgTime}m
+          </p>
         </div>
       </div>
 
       {/* Pending Approvals */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b">
-          <h2 className="text-xl font-semibold">Pending Approvals</h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            Pending Approvals
+          </h2>
         </div>
         <div className="p-6">
           {pendingResources.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No pending approvals</p>
+            <p className="text-gray-500 text-center py-8">
+              No pending approvals
+            </p>
           ) : (
             <div className="space-y-4">
               {pendingResources.map((resource) => (
                 <div key={resource._id} className="border rounded-lg p-4">
-                  <h3 className="text-lg font-semibold">{resource.heading}</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {resource.heading}
+                  </h3>
                   <p className="text-sm text-gray-500 mt-1">
-                    By: {resource.created_by?.full_name} ({resource.created_by?.email})
+                    By: {resource.created_by?.full_name} (
+                    {resource.created_by?.email})
                   </p>
-                  <p className="text-sm text-gray-500">Classification: {resource.classification}</p>
-                  <p className="text-gray-700 mt-2 line-clamp-3">{resource.data_body}</p>
+                  <p className="text-sm text-gray-500">
+                    Classification: {resource.classification}
+                  </p>
+                  <p className="text-gray-700 mt-2 line-clamp-3">
+                    {resource.data_body}
+                  </p>
                   <div className="mt-4 flex space-x-2">
                     <button
                       onClick={() => handleApprove(resource._id)}
@@ -168,11 +193,15 @@ export default function ValidatorDashboard() {
       {/* Approval History */}
       <div className="bg-white rounded-lg shadow">
         <div className="p-6 border-b">
-          <h2 className="text-xl font-semibold">Approval History</h2>
+          <h2 className="text-xl font-semibold text-gray-900">
+            Approval History
+          </h2>
         </div>
         <div className="p-6">
           {history.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No approval history</p>
+            <p className="text-gray-500 text-center py-8">
+              No approval history
+            </p>
           ) : (
             <div className="space-y-2">
               {history.map((resource) => (
@@ -184,9 +213,9 @@ export default function ValidatorDashboard() {
                     <span className="font-medium">{resource.heading}</span>
                     <span
                       className={`ml-2 px-2 py-1 rounded text-xs ${
-                        resource.approval_state === 'Approved'
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-red-100 text-red-800'
+                        resource.approval_state === "Approved"
+                          ? "bg-green-100 text-green-800"
+                          : "bg-red-100 text-red-800"
                       }`}
                     >
                       {resource.approval_state}
@@ -204,4 +233,3 @@ export default function ValidatorDashboard() {
     </div>
   );
 }
-

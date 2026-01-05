@@ -26,3 +26,18 @@ body {
   }
 }
 
+/* Ensure inputs and textareas have visible text */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+  color: #111827; /* gray-900 */
+  background-color: #ffffff;
+}
+
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+  color: #9ca3af; /* gray-400 */
+}

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "init-db": "tsx scripts/init-db.ts"
   },
   "dependencies": {
     "next": "^14.2.0",
@@ -34,7 +35,7 @@
     "postcss": "^8.4.35",
     "autoprefixer": "^10.4.17",
     "eslint": "^8.56.0",
-    "eslint-config-next": "^14.2.0"
+    "eslint-config-next": "^14.2.0",
+    "tsx": "^4.7.0"
   }
 }
-
