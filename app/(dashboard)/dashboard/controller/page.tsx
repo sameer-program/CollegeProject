@@ -3,32 +3,32 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-export default function ControllerUsersPage() {
+export default function ControllerAIModulesPage() {
   const { data: session } = useSession();
-  const [users, setUsers] = useState<any[]>([]);
+  const [aiModules, setAiModules] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchUsers();
+    fetchAIModules();
   }, []);
 
-  const fetchUsers = async () => {
+  const fetchAIModules = async () => {
     try {
       setLoading(true);
       setError("");
-      const response = await fetch("/api/users");
+      const response = await fetch("/api/ai/modules");
       
       if (!response.ok) {
         const data = await response.json();
-        throw new Error(data.error || "Failed to fetch users");
+        throw new Error(data.error || "Failed to fetch AI modules");
       }
 
       const data = await response.json();
-      setUsers(data.users || []);
+      setAiModules(data.modules || []);
     } catch (err: any) {
-      console.error("Error fetching users:", err);
-      setError(err.message || "An error occurred while fetching users");
+      console.error("Error fetching AI modules:", err);
+      setError(err.message || "An error occurred while fetching AI modules");
     } finally {
       setLoading(false);
     }
@@ -37,7 +37,7 @@ export default function ControllerUsersPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
+        <h1 className="text-3xl font-bold text-gray-900">AI Module Management</h1>
         <div className="text-center py-8 text-gray-600">Loading...</div>
       </div>
     );
@@ -46,9 +46,9 @@ export default function ControllerUsersPage() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
+        <h1 className="text-3xl font-bold text-gray-900">AI Module Management</h1>
         <button
-          onClick={fetchUsers}
+          onClick={fetchAIModules}
           className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
         >
           Refresh
@@ -62,62 +62,83 @@ export default function ControllerUsersPage() {
       )}
 
       <div className="bg-white rounded-lg shadow">
-        <div className="p-6 overflow-x-auto">
-          {users.length === 0 ? (
-            <p className="text-gray-500 text-center py-8">No users found</p>
+        <div className="p-6 border-b">
+          <h2 className="text-xl font-semibold text-gray-900">
+            AI Module Status
+          </h2>
+        </div>
+        <div className="p-6">
+          {aiModules.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">
+              No AI modules configured
+            </p>
           ) : (
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    User ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Role
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Division
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Created At
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((user) => (
-                  <tr key={user._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {user.unique_user_id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.full_name}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.email}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <span className="px-2 py-1 text-xs font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                        {user.role}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.division || "N/A"}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.createdAt
-                        ? new Date(user.createdAt).toLocaleDateString()
-                        : "N/A"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="space-y-4">
+              {aiModules.map((module) => (
+                <div
+                  key={module._id}
+                  className="border rounded-lg p-6 hover:bg-gray-50 transition-colors"
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-3 mb-2">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                          {module.module_id}
+                        </h3>
+                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                          Active
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                        <div>
+                          <p className="text-sm text-gray-500">Algorithm Type</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {module.algorithm_type}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-500">Performance Index</p>
+                          <p className="text-sm font-medium text-gray-900">
+                            {module.performance_index}
+                          </p>
+                        </div>
+                      </div>
+                      {module.performance && (
+                        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                          <h4 className="text-sm font-semibold text-gray-900 mb-3">
+                            Performance Metrics
+                          </h4>
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                              <p className="text-sm text-gray-500">Total Analyses</p>
+                              <p className="text-lg font-semibold text-gray-900">
+                                {module.performance.total_analyses || 0}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Average Score</p>
+                              <p className="text-lg font-semibold text-gray-900">
+                                {module.performance.average_score
+                                  ? module.performance.average_score.toFixed(2)
+                                  : "N/A"}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Accuracy</p>
+                              <p className="text-lg font-semibold text-gray-900">
+                                {module.performance.accuracy
+                                  ? `${module.performance.accuracy.toFixed(1)}%`
+                                  : "N/A"}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
       </div>
