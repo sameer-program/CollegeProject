@@ -30,6 +30,7 @@ export const rolePermissions: Record<UserRole, string[]> = {
   ],
   staff: [
     'knowledge:read',
+    'knowledge:create',
     'training:view',
   ],
 };
@@ -65,7 +66,7 @@ export function canAuthorize(userRole: UserRole): boolean {
 }
 
 export function canCreateKnowledge(userRole: UserRole): boolean {
-  return userRole === 'consultant' || userRole === 'controller';
+  return userRole === 'consultant' || userRole === 'controller' || userRole === 'staff';
 }
 
 export function canManageUsers(userRole: UserRole): boolean {
