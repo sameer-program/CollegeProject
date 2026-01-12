@@ -37,8 +37,12 @@ export default function ControllerAIModulesPage() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <h1 className="text-3xl font-bold text-gray-900">AI Module Management</h1>
-        <div className="text-center py-8 text-gray-600">Loading...</div>
+        <h1 className="text-3xl font-bold text-gray-900">System Controller Dashboard</h1>
+        <div className="flex justify-center items-center py-12">
+          <div className="relative">
+            <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+          </div>
+        </div>
       </div>
     );
   }

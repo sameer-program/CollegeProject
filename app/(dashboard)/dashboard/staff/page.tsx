@@ -43,7 +43,13 @@ export default function StaffDashboard() {
   };
 
   if (loading) {
-    return <div className="text-center py-8 text-gray-900">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="relative">
+          <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+        </div>
+      </div>
+    );
   }
 
   return (
