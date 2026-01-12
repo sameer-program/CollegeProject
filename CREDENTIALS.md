@@ -30,7 +30,7 @@
 - **Dashboard:** `/dashboard/controller`
 
 ### 6. Staff Role
-- **Email:** `staff@dkn.com`
+- **Email:** `c`
 - **Password:** `password123`
 - **Dashboard:** `/dashboard/staff`
 
