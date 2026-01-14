@@ -54,7 +54,10 @@ export const config = {
   matcher: [
     "/dashboard/:path*",
     "/knowledge/:path*",
-    "/api/:path*",
+    "/api/knowledge/:path*",
+    "/api/users/:path*",
+    "/api/platform/:path*",
+    "/api/ai/:path*",
     "/login",
     "/register",
   ],

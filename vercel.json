@@ -1,0 +1,5 @@
+{
+  "env": {
+    "NEXTAUTH_URL": "https://sameerrai-nine.vercel.app"
+  }
+}

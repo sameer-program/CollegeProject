@@ -7,7 +7,22 @@ if (!process.env.NEXTAUTH_SECRET) {
 }
 
 if (!process.env.NEXTAUTH_URL) {
-  process.env.NEXTAUTH_URL = "http://localhost:3000";
+  // Detect production URL from Vercel or use localhost for development
+  const vercelUrl = process.env.VERCEL_URL;
+  const isProduction =
+    process.env.NODE_ENV === "production" || process.env.VERCEL;
+
+  if (isProduction && vercelUrl) {
+    // Vercel provides VERCEL_URL without protocol (e.g., "sameerrai-nine.vercel.app")
+    // Always use https in production
+    process.env.NEXTAUTH_URL = `https://${vercelUrl}`;
+  } else if (isProduction) {
+    // Fallback: use the known production URL
+    process.env.NEXTAUTH_URL = "https://sameerrai-nine.vercel.app";
+  } else {
+    // Development
+    process.env.NEXTAUTH_URL = "http://localhost:3000";
+  }
 }
 
 // Export to ensure this module is executed
