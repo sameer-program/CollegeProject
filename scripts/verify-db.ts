@@ -9,26 +9,39 @@ async function verifyDatabase() {
     await mongoose.connect(MONGODB_URI, {
       serverSelectionTimeoutMS: 10000,
     });
+
+    if (!mongoose.connection.db) {
+      throw new Error("Database connection not ready");
+    }
+
     console.log("✅ Connected to MongoDB");
-    console.log(`📊 Database: ${mongoose.connection.db?.databaseName}\n`);
+    console.log(`📊 Database: ${mongoose.connection.db.databaseName}\n`);
 
     // Get all collections
-    const collections = await mongoose.connection.db.listCollections().toArray();
+    const collections = await mongoose.connection.db
+      .listCollections()
+      .toArray();
+
     console.log("📁 Collections found:");
     collections.forEach((col) => {
       console.log(`   - ${col.name}`);
     });
     console.log();
 
-    // Count documents in each collection
     const db = mongoose.connection.db;
-    
-    const userCount = await db.collection("users").countDocuments();
-    const platformCount = await db.collection("dknplatforms").countDocuments();
-    const knowledgeCount = await db.collection("knowledgeresources").countDocuments();
-    const keywordCount = await db.collection("knowledgekeywords").countDocuments();
-    const aiModuleCount = await db.collection("aimodules").countDocuments();
-    const aiAnalysisCount = await db.collection("aiknowledgeanalyses").countDocuments();
+
+    // Count documents in each collection (check existence first)
+    const safeCount = async (name: string) => {
+      const exists = collections.some((c) => c.name === name);
+      return exists ? db.collection(name).countDocuments() : 0;
+    };
+
+    const userCount = await safeCount("users");
+    const platformCount = await safeCount("dknplatforms");
+    const knowledgeCount = await safeCount("knowledgeresources");
+    const keywordCount = await safeCount("knowledgekeywords");
+    const aiModuleCount = await safeCount("aimodules");
+    const aiAnalysisCount = await safeCount("aiknowledgeanalyses");
 
     console.log("📊 Document Counts:");
     console.log(`   - users: ${userCount}`);
@@ -51,7 +64,11 @@ async function verifyDatabase() {
     // Show sample knowledge resources
     if (knowledgeCount > 0) {
       console.log("\n📚 Sample Knowledge Resources:");
-      const resources = await db.collection("knowledgeresources").find({}).limit(3).toArray();
+      const resources = await db
+        .collection("knowledgeresources")
+        .find({})
+        .limit(3)
+        .toArray();
       resources.forEach((res: any) => {
         console.log(`   - ${res.heading} (${res.approval_state}) - ID: ${res.resource_id}`);
       });
@@ -61,14 +78,15 @@ async function verifyDatabase() {
     console.log("\n✅ Verification complete");
   } catch (error: any) {
     console.error("❌ Error verifying database:", error.message);
+
     if (error.message.includes("IP")) {
       console.error("\n⚠️  Make sure your IP is whitelisted in MongoDB Atlas!");
       console.error("   Go to: MongoDB Atlas → Network Access → Add IP Address");
     }
+
     await mongoose.connection.close();
     process.exit(1);
   }
 }
 
 verifyDatabase();
-
