@@ -496,3 +496,4 @@ In conclusion, the deployment of the Next.js application on the Vercel platform 
 
 **Figure 29: Next.js Dependency List**
 
+

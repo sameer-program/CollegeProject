@@ -7,17 +7,18 @@ import Link from 'next/link';
 export default function RegisterPage() {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    unique_user_id: '',
-    full_name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    division: '',
-    role: 'staff' as const,
-    // Role-specific fields
-    specialisation_field: '',
-    assigned_project: '',
-  });
+  unique_user_id: '',
+  full_name: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  division: '',
+  role: 'staff' as 'staff' | 'consultant' | 'validator' | 'governance' | 'executive' | 'controller',
+  // Role-specific fields
+  specialisation_field: '',
+  assigned_project: '',
+});
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
